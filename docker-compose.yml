@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  ubuntu-docker-systemd:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    tmpfs:
+      - /run
+      - /run/lock
+      - /tmp
