@@ -11,13 +11,20 @@ ENV container=docker
 # Customization
 RUN set -x \
 # Update package indexes, upgrade packages, install systemd and necessary packages then clean unused packages and package cache
-    && apt-get update -y && apt-get full-upgrade -y && apt-get install -y systemd systemd-cron --no-install-recommends && apt-get autoremove --purge -y && apt-get clean -y && rm -rfv /var/lib/apt/lists/* \
+    && apt-get update -y \
+    && apt-get full-upgrade -y \
+    && apt-get install -y systemd systemd-cron --no-install-recommends 
+    && apt-get autoremove --purge -y \
+    && apt-get clean -y \
+    && rm -rfv /var/lib/apt/lists/* \
 # Set systemd as init
     && ln -sf /lib/systemd/systemd /sbin/init \
 # Setup logging to console 1
-	&& mkdir -p /etc/systemd/journald.conf.d && echo "[Journal]\nStorage=volatile\nRuntimeMaxUse=100M" > /etc/systemd/journald.conf.d/override.conf \
+	&& mkdir -p /etc/systemd/journald.conf.d \
+	&& echo "[Journal]\nStorage=volatile\nRuntimeMaxUse=100M" > /etc/systemd/journald.conf.d/override.conf \
 # Create new systemd target and set it as default target
-    && echo "[Unit]\nDescription=For running systemd in docker containers\nRequires=cron.target" > /etc/systemd/system/container.target && systemctl set-default container.target \
+    && echo "[Unit]\nDescription=For running systemd in docker containers\nRequires=cron.target" > /etc/systemd/system/container.target \
+    && systemctl set-default container.target \
 # Disable unused targets and services
 	&& systemctl mask -- \
 					cryptsetup.target \
